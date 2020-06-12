@@ -27,5 +27,10 @@ Install-Package Microsoft.EntityFrameworkCore.SqlServer
 Install-Package Microsoft.AspNetCore.Identity.EntityFrameworkCore
 Install-Package Microsoft.AspNetCore.Identity
 
+Add-Migration InitialIdentityModel -context appidentitydbcontext -outputdir "Identity/Migrations"
+update-database -context AppIdentityDbContext
+
+Add-Migration Initial -context ShopContext -outputdir "Data/Migrations"
+update-database -context ShopContext
 
 UI Layer
