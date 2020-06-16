@@ -29,8 +29,9 @@ namespace Web.Services
             {
                 Categories=await GetSCategories(),
                 Brands=await GetSBrans(),
-                Products=await _productRepository.ListAllAsync(),
-                CategoryId=categoryId,
+                Products = await _productRepository.ListAsync(x =>
+                     (!categoryId.HasValue || x.CategoryId == categoryId) && (!brandId.HasValue || x.BrandId == brandId)),
+                CategoryId =categoryId,
                 BrandId=brandId
 
             };
