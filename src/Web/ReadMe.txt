@@ -20,6 +20,8 @@ https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/commo
 Packages
 
 Application Core
+install-package Ardalis.Specification
+
 
 Infrastructure
 Install-Package Microsoft.EntityFrameworkCore.Tools

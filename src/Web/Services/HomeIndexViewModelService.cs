@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.Interfaces;
+using ApplicationCore.Specifications;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,16 @@ namespace Web.Services
             {
                 Categories=await GetSCategories(),
                 Brands=await GetSBrans(),
-                Products = await _productRepository.ListAsync(x =>
-                     (!categoryId.HasValue || x.CategoryId == categoryId) && (!brandId.HasValue || x.BrandId == brandId)),
+                Products = (await _productRepository.ListAsync
+                (new ProductsFilterSpecification(categoryId,brandId)))
+                .Select(x=> new ProductViewModel 
+                { Id=x.Id,
+                  ProductName=x.ProductName,
+                  Description=x.Description,
+                  UnitPrice=x.UnitPrice,
+                  PhotoPath=string.IsNullOrEmpty(x.PhotoPath) ? "no-product-image.png" : x.PhotoPath
+                
+                }).ToList(),
                 CategoryId =categoryId,
                 BrandId=brandId
 
