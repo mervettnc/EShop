@@ -31,3 +31,11 @@
         <partial name="_ProductPartial" model="product"/>
     }
 </div>
+
+<div>
+    toplam sayfa adeti: @Model.PaginationInfo.TotalPages <br /> 
+    şuanki sayfa: @Model.PaginationInfo.ActualPage <br /> 
+    toplam öge adeti: @Model.PaginationInfo.TotalItems <br /> 
+    bu sayfadaki öge adeti: @Model.PaginationInfo.ItemsOnPage <br /> 
+
+</div>

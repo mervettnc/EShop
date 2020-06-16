@@ -17,31 +17,47 @@ namespace Web.Services
         private readonly IAsyncRepository<Brand> _brandRepository;
         private readonly IAsyncRepository<Product> _productRepository;
 
-        public HomeIndexViewModelService(IAsyncRepository<Category> categoryRepository,IAsyncRepository<Brand> brandRepository, IAsyncRepository<Product> productRepository)
+        public HomeIndexViewModelService(IAsyncRepository<Category> categoryRepository, IAsyncRepository<Brand> brandRepository, IAsyncRepository<Product> productRepository)
         {
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
             _productRepository = productRepository;
         }
 
-        public async Task<HomeIndexViewModel> GetHomeIndexViewModel(int? categoryId,int? brandId)
+        public async Task<HomeIndexViewModel> GetHomeIndexViewModel(int pageIndex, int itemsPerPage, int? categoryId, int? brandId)
         {
+            int totalItems = await _productRepository.CountAsync(new ProductsFilterSpecification(categoryId, brandId));
+            var product = await _productRepository.ListAsync
+                (new ProductsFilterPaginatedSpecification(
+                    (pageIndex - 1) * itemsPerPage,
+                    itemsPerPage,
+                    categoryId,
+                    brandId
+                    )
+                );
             var vm = new HomeIndexViewModel
             {
-                Categories=await GetSCategories(),
-                Brands=await GetSBrans(),
-                Products = (await _productRepository.ListAsync
-                (new ProductsFilterSpecification(categoryId,brandId)))
-                .Select(x=> new ProductViewModel 
-                { Id=x.Id,
-                  ProductName=x.ProductName,
-                  Description=x.Description,
-                  UnitPrice=x.UnitPrice,
-                  PhotoPath=string.IsNullOrEmpty(x.PhotoPath) ? "no-product-image.png" : x.PhotoPath
-                
+                Categories = await GetSCategories(),
+                Brands = await GetSBrans(),
+                Products = product
+                .Select(x => new ProductViewModel
+                {
+                    Id = x.Id,
+                    ProductName = x.ProductName,
+                    Description = x.Description,
+                    UnitPrice = x.UnitPrice,
+                    PhotoPath = string.IsNullOrEmpty(x.PhotoPath) ? "no-product-image.png" : x.PhotoPath
+
                 }).ToList(),
-                CategoryId =categoryId,
-                BrandId=brandId
+                CategoryId = categoryId,
+                BrandId = brandId,
+                PaginationInfo= new PaginationInfoViewModel()
+                {
+                    TotalItems=totalItems,
+                    TotalPages=(int)Math.Ceiling((decimal)totalItems/itemsPerPage),
+                    ActualPage=pageIndex,
+                    ItemsOnPage=product.Count
+                }
 
             };
             return vm;
@@ -54,8 +70,8 @@ namespace Web.Services
                 .Select(x => new SelectListItem() { Value = x.Id.ToString(), Text = x.BrandName })
                 .OrderBy(x => x.Text)
                 .ToList();
-            var allItem = new SelectListItem() { Value = null, Text = "All",Selected=true };
-            items.Insert(0,allItem);
+            var allItem = new SelectListItem() { Value = null, Text = "All", Selected = true };
+            items.Insert(0, allItem);
             return items;
         }
 
