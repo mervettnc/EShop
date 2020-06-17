@@ -55,11 +55,15 @@ namespace Web.Services
                 {
                     TotalItems=totalItems,
                     TotalPages=(int)Math.Ceiling((decimal)totalItems/itemsPerPage),
-                    ActualPage=pageIndex,
+                    ActualPage=totalItems == 0 ? 0 : pageIndex,
                     ItemsOnPage=product.Count
+                  
                 }
 
             };
+
+            vm.PaginationInfo.Next = (vm.PaginationInfo.ActualPage >= vm.PaginationInfo.TotalPages) ? "disabled" : "";
+            vm.PaginationInfo.Previous = (vm.PaginationInfo.ActualPage <= 1) ? "disabled" : "";
             return vm;
         }
 
