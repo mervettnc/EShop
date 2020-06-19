@@ -21,6 +21,8 @@ Packages
 
 Application Core
 install-package Ardalis.Specification
+install-package ardalis.guardclauses (null kontrolü için kısa yol)
+
 
 
 Infrastructure
@@ -35,6 +37,9 @@ update-database -context AppIdentityDbContext
 Add-Migration Initial -context ShopContext -outputdir "Data/Migrations"
 update-database -context ShopContext
 
+
+Add-Migration AddTablesBasket -context ShopContext -outputdir "Data/Migrations"
+update-database -context ShopContext
 UI Layer
 
 

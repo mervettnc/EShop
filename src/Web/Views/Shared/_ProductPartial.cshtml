@@ -8,6 +8,17 @@
             </h4>
             <h5>₺ @Model.UnitPrice.ToString("0,000")</h5> @*("N2") 1.399,00 şeklide*@
             <p class="card-text">@Model.Description</p>
+            <form asp-controller="Basket" asp-action="Index">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ProductName" />
+                <input type="hidden" asp-for="Description" />
+                <input type="hidden" asp-for="UnitPrice" />
+                <input type="hidden" asp-for="PhotoPath" />
+                <button type="submit" class="btn btn-outline-success btn-block">
+                    <i class="fas fa-cart-plus"></i>
+                    Sepete Ekle
+                </button>
+            </form>
         </div>
 
     </div>
